@@ -29,14 +29,32 @@ def get_all_constellations():
 # 2. View a specific constellation by name
 # GET /constellations/<name> (Path Parameter)
 @app.route('/constellations/<name>', methods=['GET'])
-def get_constellation(name):
-    # Add code to get the corresponding constellation
-    return jsonify([])
-
+def get_constellation(name): 
+    constellation = next((c for c in constellations if c['name'].lower() == name.lower()),None)
+    if constellation:
+        return jsonify(constellation)
+    else:
+        return 404
 # 3. Add a new constellation
 # POST /constellations, JSON body contains the constellation details
+    
+@app.route('/constellations/new', methods=['POST'])
+def add_constellation():
+    new_constellation = request.get_json()
+    new_constellation['id'] = len(constellations) + 1
+    constellations.append(new_constellation)
+    return jsonify(new_constellation), 201
+
+
+
 
 # 4. Delete a constellation
+@app.route('/constellations/delete/<name>', methods=['DELETE'])
+def delete_constellation(name):
+    global constellations
+    constellations = [c for c in constellations if c['name'].lower() != name.lower()] 
+    return " ", 204
+
 
 # 5. Filter constellations by hemisphere and area (Query String)
 
