@@ -59,6 +59,13 @@ def delete_constellation(name):
 # 5. Filter constellations by hemisphere and area (Query String)
 
 # 6. View the main stars of a constellation specified by name
+@app.route('/constellations/main/<name>', methods=['GET'])
+def main_star(name):
+    for c in constellations:
+        if c['name'].lower() == name.lower():
+            return jsonify(c['main_stars'])
+        else:
+            return " ", 404
 
 # 7. Partially update a constellation specified by name
 
