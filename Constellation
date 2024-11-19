@@ -57,6 +57,24 @@ def delete_constellation(name):
 
 
 # 5. Filter constellations by hemisphere and area (Query String)
+@app.route('/constellations/filter', methods=['GET'])
+def filter_constellations():
+    hemisphere = request.args.get('hemisphere')
+    area = request.args.get('area')
+    filtered_constellations = constellations
+    if hemisphere == 'Northern':
+        filtered_constellations = [c for c in filtered_constellations if c['hemisphere'] == 'Northern']
+    elif hemisphere == 'Southern':
+        filtered_constellations = [c for c in filtered_constellations if c['hemisphere'] == 'Southern']
+    if area:
+        try:
+            area_threshold = float(area)  # Convert area to float for comparison
+            filtered_constellations = [c for c in filtered_constellations if c['area'] >= area_threshold]
+        except ValueError:
+            return jsonify({"error": "Invalid area parameter. Must be a number."}), 400
+
+    return jsonify(filtered_constellations)
+
 
 # 6. View the main stars of a constellation specified by name
 @app.route('/constellations/main/<name>', methods=['GET'])
